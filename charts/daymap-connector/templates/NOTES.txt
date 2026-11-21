@@ -1,0 +1,16 @@
+The Daymap connector is deployed.
+
+Add it to Claude:
+  1. In Claude (web, desktop or mobile), open Settings → Connectors → Add custom connector.
+  2. Use this URL: {{ .Values.publicUrl | trimSuffix "/" }}/mcp
+  3. Click Connect, then sign in with your own Daymap username and password.
+     Allowed Daymap usernames: {{ join ", " .Values.connector.allowedDaymapUsers }}
+
+Check it's up:
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "daymap-connector.fullname" . }} 8080:{{ .Values.service.port }}
+  curl http://localhost:8080/healthz
+{{- if not .Values.ingress.enabled }}
+
+Ingress is disabled. Claude must reach {{ .Values.publicUrl }} over HTTPS from the
+internet, so expose the Service another way (ingress.enabled=true, a Gateway, a tunnel...).
+{{- end }}

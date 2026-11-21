@@ -1,0 +1,89 @@
+# -- Public HTTPS address the connector is reachable at, without a trailing path,
+# e.g. https://daymap.example.com. Required. Claude's connector URL is <publicUrl>/mcp.
+publicUrl: ""
+
+daymap:
+  # -- Your school's Daymap site, e.g. https://yourschool.eq.daymap.net. Required.
+  url: ""
+
+connector:
+  # -- Name shown on the connector's sign-in page.
+  title: Daymap
+  # -- Daymap usernames allowed to sign in (matched case-insensitively). Required:
+  # each parent signs in with their own Daymap account, and only these may.
+  allowedDaymapUsers: []
+  # -- OAuth redirect URIs clients may register. Empty means Claude's callbacks
+  # (https://claude.ai/api/mcp/auth_callback and https://claude.com/api/mcp/auth_callback).
+  allowedRedirectUris: []
+  # -- Number of reverse proxies (e.g. the ingress controller) in front of the pod,
+  # used to find client IPs for sign-in rate limiting.
+  trustProxy: 1
+
+secrets:
+  # -- Use an existing Secret instead of creating one. It must contain the key
+  # TOKEN_SIGNING_SECRET.
+  existingSecret: ""
+  # -- Key for encrypting OAuth tokens (32+ characters). Generated and kept across
+  # upgrades if left empty. Changing it signs everyone out.
+  tokenSigningSecret: ""
+
+image:
+  repository: ghcr.io/johngrimes/daymap-connector
+  # -- Defaults to the chart's appVersion.
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# -- One replica is plenty. Tokens are stateless, so more would work, but each replica
+# keeps its own record of used authorisation codes (replay protection).
+replicaCount: 1
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # cert-manager.io/cluster-issuer: letsencrypt
+  # -- Host name; should match publicUrl.
+  host: daymap.example.com
+  tls: []
+  #  - secretName: daymap-connector-tls
+  #    hosts:
+  #      - daymap.example.com
+
+resources:
+  requests:
+    cpu: 10m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
+
+# -- Extra environment variables for the container.
+extraEnv: []
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

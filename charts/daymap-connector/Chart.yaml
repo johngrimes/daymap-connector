@@ -1,0 +1,13 @@
+apiVersion: v2
+name: daymap-connector
+description: Hosted Claude connector (remote MCP server) for the Daymap school family portal
+type: application
+version: 0.4.0
+appVersion: "0.4.0"
+home: https://github.com/johngrimes/daymap-connector
+sources:
+  - https://github.com/johngrimes/daymap-connector
+keywords:
+  - mcp
+  - claude
+  - daymap
