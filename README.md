@@ -15,6 +15,10 @@ forms, give or decline excursion consent, and book or cancel parent-teacher inte
 tools that change things are marked as such, so Claude asks before using them. **It never
 makes payments:** writes to Daymap's payment endpoints are always refused.
 
+> **Unofficial.** This project isn't affiliated with, endorsed by or supported by Daymap or any
+> school. It uses the family portal's internal API, which can change without notice. Use it
+> with your own account, and at your own risk.
+
 ## Tools
 
 Reading:
